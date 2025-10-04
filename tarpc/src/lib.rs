@@ -250,7 +250,8 @@ pub(crate) mod util;
 
 pub use crate::transport::sealed::Transport;
 
-use std::{any::Any, error::Error, io, sync::Arc, time::Instant};
+use std::{any::Any, error::Error, io, sync::Arc};
+use web_time::Instant;
 
 /// A message from a client to a server.
 #[derive(Debug)]

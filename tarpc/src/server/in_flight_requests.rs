@@ -4,10 +4,13 @@ use futures::future::{AbortHandle, AbortRegistration};
 use std::{
     collections::hash_map,
     task::{Context, Poll},
-    time::Instant,
 };
-use tokio_util::time::delay_queue::{self, DelayQueue};
+#[cfg(not(target_arch = "wasm32"))]
+use tokio_util::time::delay_queue::{DelayQueue, Key};
+#[cfg(target_arch = "wasm32")]
+use crate::util::wasm::{DelayQueue, Key};
 use tracing::Span;
+use web_time::Instant;
 
 /// A data structure that tracks in-flight requests. It aborts requests,
 /// either on demand or when a request deadline expires.
@@ -23,7 +26,7 @@ struct RequestData {
     /// Aborts the response handler for the associated request.
     abort_handle: AbortHandle,
     /// The key to remove the timer for the request's deadline.
-    deadline_key: delay_queue::Key,
+    deadline_key: Key,
     /// The client span.
     span: Span,
 }
@@ -155,7 +158,7 @@ mod tests {
         let mut abortable_future = Box::new(Abortable::new(pending::<()>(), abort_registration));
 
         tokio::time::pause();
-        tokio::time::advance(std::time::Duration::from_secs(1000)).await;
+        tokio::time::advance(web_time::Duration::from_secs(1000)).await;
 
         assert_matches!(
             in_flight_requests.poll_expired(&mut noop_context()),

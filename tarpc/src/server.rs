@@ -23,10 +23,9 @@ use futures::{
 };
 use in_flight_requests::{AlreadyExistsError, InFlightRequests};
 use pin_project::pin_project;
-use std::{
-    convert::TryFrom, error::Error, fmt, marker::PhantomData, pin::Pin, sync::Arc, time::SystemTime,
-};
+use std::{convert::TryFrom, error::Error, fmt, marker::PhantomData, pin::Pin, sync::Arc};
 use tracing::{info_span, instrument::Instrument, Span};
+use web_time::SystemTime;
 
 mod in_flight_requests;
 pub mod request_hook;
@@ -971,12 +970,8 @@ mod tests {
         Future,
     };
     use futures_test::task::noop_context;
-    use std::{
-        io,
-        pin::Pin,
-        task::Poll,
-        time::{Duration, Instant},
-    };
+    use std::{io, pin::Pin, task::Poll};
+    use web_time::{Duration, Instant};
 
     fn test_channel<Req, Resp>() -> (
         Pin<Box<BaseChannel<Req, Resp, UnboundedChannel<ClientMessage<Req>, Response<Resp>>>>>,

@@ -27,10 +27,10 @@ use std::{
         atomic::{AtomicUsize, Ordering},
         Arc,
     },
-    time::SystemTime,
 };
 use tokio::sync::{mpsc, oneshot};
 use tracing::Span;
+use web_time::SystemTime;
 
 /// Settings that control the behavior of the client.
 #[derive(Clone, Debug)]

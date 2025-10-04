@@ -183,11 +183,9 @@ mod tests {
         TrackedRequest,
     };
     use pin_utils::pin_mut;
-    use std::{
-        marker::PhantomData,
-        time::{Duration, Instant},
-    };
+    use std::marker::PhantomData;
     use tracing::Span;
+    use web_time::{Duration, Instant};
 
     #[tokio::test]
     async fn throttler_in_flight_requests() {

@@ -128,7 +128,8 @@ pub trait RequestHook: Serve {
     ///     context, ServerError,
     ///     server::{Serve, serve, request_hook::{BeforeRequest, AfterRequest, RequestHook}}
     /// };
-    /// use std::{io, time::Instant};
+    /// use std::io;
+    /// use web_time::Instant;
     ///
     /// struct PrintLatency(Instant);
     ///

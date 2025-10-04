@@ -12,8 +12,9 @@ use crate::{
 };
 use futures::{task::*, Sink, Stream};
 use pin_project::pin_project;
-use std::{collections::VecDeque, io, pin::Pin, time::Instant};
+use std::{collections::VecDeque, io, pin::Pin};
 use tracing::Span;
+use web_time::Instant;
 
 #[pin_project]
 pub(crate) struct FakeChannel<In, Out> {

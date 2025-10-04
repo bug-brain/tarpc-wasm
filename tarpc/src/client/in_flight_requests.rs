@@ -8,7 +8,10 @@ use std::{
     task::{Context, Poll},
 };
 use tokio::sync::oneshot;
-use tokio_util::time::delay_queue::{self, DelayQueue};
+#[cfg(not(target_arch = "wasm32"))]
+use tokio_util::time::delay_queue::{DelayQueue, Key};
+#[cfg(target_arch = "wasm32")]
+use crate::util::wasm::{DelayQueue, Key};
 use tracing::Span;
 
 /// Requests already written to the wire that haven't yet received responses.
@@ -33,7 +36,7 @@ struct RequestData<Res> {
     span: Span,
     response_completion: oneshot::Sender<Res>,
     /// The key to remove the timer for the request's deadline.
-    deadline_key: delay_queue::Key,
+    deadline_key: Key,
 }
 
 /// An error returned when an attempt is made to insert a request with an ID that is already in
