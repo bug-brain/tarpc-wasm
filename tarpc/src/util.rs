@@ -70,7 +70,7 @@ fn test_compact() {
     assert_eq!(map.capacity(), 1792);
 }
 
-#[cfg(target_arch = "wasm32")]
+// #[cfg(target_arch = "wasm32")]
 pub mod wasm {
     use gloo_timers::callback::Timeout;
     use std::{
@@ -137,11 +137,11 @@ pub mod wasm {
                     .as_millis()
                     .min(u128::from(u32::MAX)) as u32;
                 let waker = self.waker.clone();
-                self.timeout = Some(Timeout::new(delay_ms, move || {
-                    if let Some(waker) = waker.as_ref() {
+                if let Some(waker) = waker {                    
+                    self.timeout = Some(Timeout::new(delay_ms, move || {
                         waker.wake_by_ref();
-                    }
-                }));
+                    }));
+                }
             }
         }
 
@@ -175,7 +175,6 @@ pub mod wasm {
             if let Some(Reverse((deadline, _, _))) = self.heap.peek() {
                 if *deadline <= now {
                     let Reverse((deadline, key, data)) = self.heap.pop().unwrap();
-                    self.set_timeout();
                     return Poll::Ready(Some(Expired {
                         data,
                         deadline,
@@ -183,6 +182,7 @@ pub mod wasm {
                     }));
                 }
             }
+            self.set_timeout();
             Poll::Pending
         }
 
